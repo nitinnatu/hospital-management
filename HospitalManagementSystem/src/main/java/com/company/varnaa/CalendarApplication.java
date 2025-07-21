@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
@@ -30,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-
 
 @Controller
 class CalendarApplication {
@@ -157,7 +153,6 @@ class Event {
 	
 }
 
-
 @Repository
 interface EventJpaRepository extends JpaRepository<Event, Long> {
 	
@@ -187,25 +182,19 @@ class EventController {
 	
 	@RequestMapping(value="/allevents", method=RequestMethod.GET)
 	public List<Event> allEvents() {
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		String doctorName = authentication.getName();
 		return eventRepository.findAll();
 	}
 	
 	@RequestMapping(value="/findByName", method=RequestMethod.GET)
 	public List<Event> findByName() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String doctorName = authentication.getName();
-		return eventRepository.findByName(doctorName);
+		return eventRepository.findByName("doctorName");
 	}
 	
 	
 	@RequestMapping(value="/event", method=RequestMethod.POST)
 	public Event addEvent(@RequestBody Event event) {
-		Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-		String username= authentication.getName();
 		Event created = new Event();
-		created.setName(username);
+		created.setName("username");
 		created.setTitle(event.getTitle());
 		created.setDescription(event.getDescription());
 		created.setStart(event.getStart());
